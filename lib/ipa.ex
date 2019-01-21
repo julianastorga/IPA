@@ -88,7 +88,7 @@ defmodule IPA do
       Regex.match?(@mask_regex, mask) ->
         [h|t] = mask
           |> String.replace(".", "")
-          |> String.to_char_list
+          |> String.to_charlist
         binary_validation(h, t, [])
       valid_address?(mask) ->
         mask |> mask_to_bits |> valid_mask?
@@ -498,7 +498,7 @@ defmodule IPA do
   defp transform_addr(addr, base, max_length, joiner, prefix) do
     addr
     |> Stream.map(&Integer.to_string(&1, base))
-    |> Stream.map(&left_pad(&1, max_length, ?0))
+    |> Stream.map(&left_pad(&1, max_length, "0"))
     |> Enum.join(joiner)
     |> String.replace_prefix("", prefix)
   end
@@ -507,7 +507,7 @@ defmodule IPA do
   # any leading zeroes are discarded, so we need to left-pad
   # them to their expected length (ie. 8 for binary, 2 for hex)
   defp left_pad(n, max_len, _) when byte_size(n) == byte_size(max_len), do: n
-  defp left_pad(n, max_len, char), do: String.rjust(n, max_len, char)
+  defp left_pad(n, max_len, char), do: String.pad_leading(n, max_len, char)
 
   # discover which block an ip address belongs to
   defp which_block?({0, _, _, _}),                                      do: :this_network
